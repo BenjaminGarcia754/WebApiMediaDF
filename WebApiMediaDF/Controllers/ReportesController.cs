@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,22 +14,25 @@ namespace WebApiMediaDF.Controllers
     public class ReportesController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public ReportesController(WebApiMediaDbContex context)
+        public ReportesController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/Reportes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reporte>>> GetReportes()
+        public async Task<ActionResult<IEnumerable<ReporteDTO>>> GetReportes()
         {
-            return await _context.Reportes.ToListAsync();
+            var reportes = await _context.Reportes.ToListAsync();
+            return mapper.Map<List<ReporteDTO>>(reportes);
         }
 
         // GET: api/Reportes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Reporte>> GetReporte(int id)
+        public async Task<ActionResult<ReporteDTO>> GetReporte(int id)
         {
             var reporte = await _context.Reportes.FindAsync(id);
 
@@ -37,15 +41,16 @@ namespace WebApiMediaDF.Controllers
                 return NotFound();
             }
 
-            return reporte;
+            return mapper.Map<ReporteDTO>(reporte);
         }
 
         // PUT: api/Reportes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReporte(int id, Reporte reporte)
+        public async Task<IActionResult> PutReporte(int id, ReporteDTO reporteDTO)
         {
-            if (id != reporte.Id)
+            var reporte = mapper.Map<Reporte>(reporteDTO);
+            if (id != reporteDTO.Id)
             {
                 return BadRequest();
             }
@@ -74,8 +79,9 @@ namespace WebApiMediaDF.Controllers
         // POST: api/Reportes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Reporte>> PostReporte(Reporte reporte)
+        public async Task<ActionResult<Reporte>> PostReporte(ReporteDTO reporteDTO)
         {
+            var reporte = mapper.Map<Reporte>(reporteDTO);
             _context.Reportes.Add(reporte);
             await _context.SaveChangesAsync();
 

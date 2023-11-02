@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,22 +16,26 @@ namespace WebApiMediaDF.Controllers
     public class ComentariosController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public ComentariosController(WebApiMediaDbContex context)
+        public ComentariosController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/Comentarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Comentarios>>> GetComentarios()
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<IEnumerable<ComentarioDTO>>> GetComentarios()
         {
-            return await _context.Comentarios.ToListAsync();
+            var comentarios = await _context.Comentarios.ToListAsync();
+            return mapper.Map<List<ComentarioDTO>>(comentarios);
         }
 
         // GET: api/Comentarios/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Comentarios>> GetComentarios(int id)
+        public async Task<ActionResult<ComentarioDTO>> GetComentarios(int id)
         {
             var comentarios = await _context.Comentarios.FindAsync(id);
 
@@ -37,14 +44,15 @@ namespace WebApiMediaDF.Controllers
                 return NotFound();
             }
 
-            return comentarios;
+            return mapper.Map<ComentarioDTO>(comentarios);
         }
 
         // PUT: api/Comentarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutComentarios(int id, Comentarios comentarios)
+        public async Task<IActionResult> PutComentarios(int id, ComentarioDTO comentario)
         {
+            var comentarios = mapper.Map<Comentarios>(comentario);
             if (id != comentarios.Id)
             {
                 return BadRequest();
@@ -74,12 +82,13 @@ namespace WebApiMediaDF.Controllers
         // POST: api/Comentarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comentarios>> PostComentarios(Comentarios comentarios)
+        public async Task<ActionResult<Comentario>> PostComentarios(ComentarioDTO comentarioDTO)
         {
+            var comentarios = mapper.Map<Comentarios>(comentarioDTO);
             _context.Comentarios.Add(comentarios);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetComentarios", new { id = comentarios.Id }, comentarios);
+            return CreatedAtAction("GetComentarios", new { id = comentarios.Id });
         }
 
         // DELETE: api/Comentarios/5

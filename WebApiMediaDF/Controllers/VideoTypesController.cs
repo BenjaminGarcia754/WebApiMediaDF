@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,22 +14,25 @@ namespace WebApiMediaDF.Controllers
     public class VideoTypesController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public VideoTypesController(WebApiMediaDbContex context)
+        public VideoTypesController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/VideoTypes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VideoType>>> GetVideoTypes()
+        public async Task<ActionResult<IEnumerable<VideoTypeDTO>>> GetVideoTypes()
         {
-            return await _context.VideoTypes.ToListAsync();
+            var videoTypes = await _context.VideoTypes.ToListAsync();
+            return mapper.Map<List<VideoTypeDTO>>(videoTypes);
         }
 
         // GET: api/VideoTypes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<VideoType>> GetVideoType(int id)
+        public async Task<ActionResult<VideoTypeDTO>> GetVideoType(int id)
         {
             var videoType = await _context.VideoTypes.FindAsync(id);
 
@@ -37,14 +41,15 @@ namespace WebApiMediaDF.Controllers
                 return NotFound();
             }
 
-            return videoType;
+            return mapper.Map<VideoTypeDTO>(videoType);
         }
 
         // PUT: api/VideoTypes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVideoType(int id, VideoType videoType)
+        public async Task<IActionResult> PutVideoType(int id, VideoTypeDTO videoTypeDTO)
         {
+            var videoType = mapper.Map<VideoType>(videoTypeDTO);
             if (id != videoType.Id)
             {
                 return BadRequest();
@@ -74,8 +79,9 @@ namespace WebApiMediaDF.Controllers
         // POST: api/VideoTypes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<VideoType>> PostVideoType(VideoType videoType)
+        public async Task<ActionResult<VideoType>> PostVideoType(VideoTypeDTO videoTypeDTO)
         {
+            var videoType = mapper.Map<VideoType>(videoTypeDTO);
             _context.VideoTypes.Add(videoType);
             await _context.SaveChangesAsync();
 

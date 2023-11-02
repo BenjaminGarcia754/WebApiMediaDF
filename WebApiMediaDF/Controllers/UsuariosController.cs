@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,22 +14,25 @@ namespace WebApiMediaDF.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public UsuariosController(WebApiMediaDbContex context)
+        public UsuariosController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/Usuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetUsuarios()
         {
-            return await _context.Usuarios.ToListAsync();
+            var usuarios = await _context.Usuarios.ToListAsync();
+            return mapper.Map<List<UsuarioDTO>>(usuarios);
         }
 
         // GET: api/Usuarios/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(int id)
+        public async Task<ActionResult<UsuarioDTO>> GetUsuario(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
 
@@ -37,15 +41,16 @@ namespace WebApiMediaDF.Controllers
                 return NotFound();
             }
 
-            return usuario;
+            return mapper.Map<UsuarioDTO>(usuario);
         }
 
         // PUT: api/Usuarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
+        public async Task<IActionResult> PutUsuario(int id, UsuarioDTO usuarioDTO)
         {
-            if (id != usuario.Id)
+            var usuario = mapper.Map<Usuario>(usuarioDTO);
+            if (id != usuarioDTO.Id)
             {
                 return BadRequest();
             }
@@ -74,8 +79,9 @@ namespace WebApiMediaDF.Controllers
         // POST: api/Usuarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        public async Task<ActionResult<Usuario>> PostUsuario(UsuarioDTO usuarioDTO)
         {
+            var usuario = mapper.Map<Usuario>(usuarioDTO);
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 

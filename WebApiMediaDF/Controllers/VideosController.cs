@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,22 +14,25 @@ namespace WebApiMediaDF.Controllers
     public class VideosController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public VideosController(WebApiMediaDbContex context)
+        public VideosController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/Videos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Video>>> GetVideos()
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideos()
         {
-            return await _context.Videos.ToListAsync();
+            var videos = await _context.Videos.ToListAsync();
+            return mapper.Map<List<VideoDTO>>(videos);
         }
 
         // GET: api/Videos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Video>> GetVideo(int id)
+        public async Task<ActionResult<VideoDTO>> GetVideo(int id)
         {
             var video = await _context.Videos.FindAsync(id);
 
@@ -37,15 +41,16 @@ namespace WebApiMediaDF.Controllers
                 return NotFound();
             }
 
-            return video;
+            return mapper.Map<VideoDTO>(video);
         }
 
         // PUT: api/Videos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVideo(int id, Video video)
+        public async Task<IActionResult> PutVideo(int id, VideoDTO videoDTO)
         {
-            if (id != video.Id)
+            var video = mapper.Map<Video>(videoDTO);
+            if (id != videoDTO.Id)
             {
                 return BadRequest();
             }
@@ -74,8 +79,9 @@ namespace WebApiMediaDF.Controllers
         // POST: api/Videos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Video>> PostVideo(Video video)
+        public async Task<ActionResult<Video>> PostVideo(VideoDTO videoDTO)
         {
+            var video = mapper.Map<Video>(videoDTO);
             _context.Videos.Add(video);
             await _context.SaveChangesAsync();
 

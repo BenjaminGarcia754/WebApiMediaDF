@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,22 +14,25 @@ namespace WebApiMediaDF.Controllers
     public class TipoUsuariosController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public TipoUsuariosController(WebApiMediaDbContex context)
+        public TipoUsuariosController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/TipoUsuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TipoUsuario>>> GetTipoUsuarios()
+        public async Task<ActionResult<IEnumerable<TipoUsuarioDTO>>> GetTipoUsuarios()
         {
-            return await _context.TipoUsuarios.ToListAsync();
+            var tipoUsuarios = await _context.TipoUsuarios.ToListAsync();
+            return mapper.Map<List<TipoUsuarioDTO>>(tipoUsuarios);
         }
 
         // GET: api/TipoUsuarios/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TipoUsuario>> GetTipoUsuario(int id)
+        public async Task<ActionResult<TipoUsuarioDTO>> GetTipoUsuario(int id)
         {
             var tipoUsuario = await _context.TipoUsuarios.FindAsync(id);
 
@@ -37,15 +41,16 @@ namespace WebApiMediaDF.Controllers
                 return NotFound();
             }
 
-            return tipoUsuario;
+            return mapper.Map<TipoUsuarioDTO>(tipoUsuario);
         }
 
         // PUT: api/TipoUsuarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTipoUsuario(int id, TipoUsuario tipoUsuario)
+        public async Task<IActionResult> PutTipoUsuario(int id, TipoUsuarioDTO tipoUsuarioDTO)
         {
-            if (id != tipoUsuario.Id)
+            var tipoUsuario = mapper.Map<TipoUsuario>(tipoUsuarioDTO);
+            if (id != tipoUsuarioDTO.Id)
             {
                 return BadRequest();
             }
@@ -74,8 +79,9 @@ namespace WebApiMediaDF.Controllers
         // POST: api/TipoUsuarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TipoUsuario>> PostTipoUsuario(TipoUsuario tipoUsuario)
+        public async Task<ActionResult<TipoUsuario>> PostTipoUsuario(TipoUsuarioDTO tipoUsuarioDTO)
         {
+            var tipoUsuario = mapper.Map<TipoUsuario>(tipoUsuarioDTO);
             _context.TipoUsuarios.Add(tipoUsuario);
             await _context.SaveChangesAsync();
 

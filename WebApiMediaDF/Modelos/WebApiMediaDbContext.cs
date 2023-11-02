@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class WebApiMediaDbContex : DbContext
+public class WebApiMediaDbContex : IdentityDbContext
 {
     public DbSet<TipoUsuario> TipoUsuarios { get; set; }
     public DbSet<Materia> Materias { get; set; }

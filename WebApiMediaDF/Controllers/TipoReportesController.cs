@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,22 +14,25 @@ namespace WebApiMediaDF.Controllers
     public class TipoReportesController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public TipoReportesController(WebApiMediaDbContex context)
+        public TipoReportesController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/TipoReportes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TipoReporte>>> GetTiposReporte()
+        public async Task<ActionResult<IEnumerable<TipoReporteDTO>>> GetTiposReporte()
         {
-            return await _context.TiposReporte.ToListAsync();
+            var reportes = await _context.TiposReporte.ToListAsync();
+            return mapper.Map<List<TipoReporteDTO>>(reportes);
         }
 
         // GET: api/TipoReportes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TipoReporte>> GetTipoReporte(int id)
+        public async Task<ActionResult<TipoReporteDTO>> GetTipoReporte(int id)
         {
             var tipoReporte = await _context.TiposReporte.FindAsync(id);
 
@@ -37,15 +41,16 @@ namespace WebApiMediaDF.Controllers
                 return NotFound();
             }
 
-            return tipoReporte;
+            return mapper.Map<TipoReporteDTO>(tipoReporte);
         }
 
         // PUT: api/TipoReportes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTipoReporte(int id, TipoReporte tipoReporte)
+        public async Task<IActionResult> PutTipoReporte(int id, TipoReporteDTO tipoReporteDTO)
         {
-            if (id != tipoReporte.Id)
+            var tipoReporte = mapper.Map<TipoReporte>(tipoReporteDTO);
+            if (id != tipoReporteDTO.Id)
             {
                 return BadRequest();
             }
@@ -74,8 +79,9 @@ namespace WebApiMediaDF.Controllers
         // POST: api/TipoReportes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TipoReporte>> PostTipoReporte(TipoReporte tipoReporte)
+        public async Task<ActionResult<TipoReporte>> PostTipoReporte(TipoReporteDTO tipoReporteDTO)
         {
+            var tipoReporte = mapper.Map<TipoReporte>(tipoReporteDTO);
             _context.TiposReporte.Add(tipoReporte);
             await _context.SaveChangesAsync();
 

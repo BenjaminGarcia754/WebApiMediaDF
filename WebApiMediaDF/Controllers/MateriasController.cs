@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,22 +14,25 @@ namespace WebApiMediaDF.Controllers
     public class MateriasController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public MateriasController(WebApiMediaDbContex context)
+        public MateriasController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/Materias
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Materia>>> GetMaterias()
+        public async Task<ActionResult<IEnumerable<MateriaDTO>>> GetMaterias()
         {
-            return await _context.Materias.ToListAsync();
+            var materias = await _context.Materias.ToListAsync();
+            return mapper.Map<List<MateriaDTO>>(materias);
         }
 
         // GET: api/Materias/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Materia>> GetMateria(int id)
+        public async Task<ActionResult<MateriaDTO>> GetMateria(int id)
         {
             var materia = await _context.Materias.FindAsync(id);
 
@@ -37,15 +41,16 @@ namespace WebApiMediaDF.Controllers
                 return NotFound();
             }
 
-            return materia;
+            return mapper.Map<MateriaDTO>(materia);
         }
 
         // PUT: api/Materias/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMateria(int id, Materia materia)
+        public async Task<IActionResult> PutMateria(int id, MateriaDTO materiaDTO)
         {
-            if (id != materia.Id)
+            var materia = mapper.Map<Materia>(materiaDTO);
+            if (id != materiaDTO.Id)
             {
                 return BadRequest();
             }
@@ -74,8 +79,9 @@ namespace WebApiMediaDF.Controllers
         // POST: api/Materias
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Materia>> PostMateria(Materia materia)
+        public async Task<ActionResult<Materia>> PostMateria(MateriaDTO materiaDTO)
         {
+            var materia = mapper.Map<Materia>(materiaDTO);  
             _context.Materias.Add(materia);
             await _context.SaveChangesAsync();
 
