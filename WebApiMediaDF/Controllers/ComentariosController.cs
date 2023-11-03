@@ -26,7 +26,7 @@ namespace WebApiMediaDF.Controllers
 
         // GET: api/Comentarios
         [HttpGet]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<ComentarioDTO>>> GetComentarios()
         {
             var comentarios = await _context.Comentarios.ToListAsync();
@@ -82,7 +82,7 @@ namespace WebApiMediaDF.Controllers
         // POST: api/Comentarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comentario>> PostComentarios(ComentarioDTO comentarioDTO)
+        public async Task<ActionResult<Comentarios>> PostComentarios(ComentarioDTO comentarioDTO)
         {
             var comentarios = mapper.Map<Comentarios>(comentarioDTO);
             _context.Comentarios.Add(comentarios);
