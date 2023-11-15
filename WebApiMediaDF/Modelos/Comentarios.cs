@@ -12,6 +12,8 @@ public class Comentarios
 
     [Required]
     public string Comentario { get; set; }
+    [Required]
+    public string username { get; set; }
 
     public Video VideoRelacionadoNavigation { get; set; }
 }

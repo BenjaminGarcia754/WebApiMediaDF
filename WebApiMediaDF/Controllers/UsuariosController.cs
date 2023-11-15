@@ -44,6 +44,17 @@ namespace WebApiMediaDF.Controllers
             return mapper.Map<UsuarioDTO>(usuario);
         }
 
+        [HttpGet("username")]
+        public async Task<ActionResult<UsuarioDTO>> GetUsuario(string username)
+        {
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Username == username);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+            return mapper.Map<UsuarioDTO>(usuario);
+        }
+
         // PUT: api/Usuarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -77,7 +88,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // POST: api/Usuarios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Usuario>> PostUsuario(UsuarioDTO usuarioDTO)
         {

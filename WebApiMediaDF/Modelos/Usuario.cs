@@ -19,6 +19,8 @@ public class Usuario
     [Required]
     public string NombreDeUsuario { get; set; }
 
+    public string IdUsuarioIdentity { get; set; }
+
     public TipoUsuario TipoUsuario { get; set; }
     public ICollection<VideoType> VideoTypes { get; set; }
     public ICollection<Reporte> Reportes { get; set; }

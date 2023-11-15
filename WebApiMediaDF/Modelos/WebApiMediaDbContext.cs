@@ -17,6 +17,10 @@ public class WebApiMediaDbContex : IdentityDbContext
 
     }
 
+    public WebApiMediaDbContex()
+    {
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

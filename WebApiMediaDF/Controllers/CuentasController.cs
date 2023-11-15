@@ -34,13 +34,33 @@ namespace WebApiMediaDF.Controllers
 
             if (resultado.Succeeded)
             {
-                return ConstruirToken(credencialesUsuario);
+                // Obtener el Id del usuario recién creado
+                var usuarioIdentity = await UserManager.FindByNameAsync(credencialesUsuario.Username);
+                var userId = usuarioIdentity.Id;
+                UsuarioDTO usuarioDTO = new UsuarioDTO();
+                usuarioDTO.Username = credencialesUsuario.Username;
+                usuarioDTO.Contraseña = credencialesUsuario.Password;
+                usuarioDTO.NombreDeUsuario = credencialesUsuario.Nombre;
+                usuarioDTO.Tipo = credencialesUsuario.Tipo;
+                usuarioDTO.UsernameIdentity = userId;
+
+                if (usuarioDTO.registrarUsuario())
+                {
+                    var respuestaAutenticacion = ConstruirToken(credencialesUsuario);
+
+                    return respuestaAutenticacion;
+                }
+                else
+                {
+                    return BadRequest("Error al registrar el usuario");
+                }
             }
             else
             {
                 return BadRequest(resultado.Errors);
             }
         }
+
 
         [HttpPost("login")]
         public async Task<ActionResult<RespuestaAutenticacion>> Login(CredencialesUsuario credencialesUsuario)
