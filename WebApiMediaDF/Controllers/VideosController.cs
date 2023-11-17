@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApiMediaDF.Controllers.Services;
 
 namespace WebApiMediaDF.Controllers
 {
@@ -42,6 +43,23 @@ namespace WebApiMediaDF.Controllers
             }
 
             return mapper.Map<VideoDTO>(video);
+        }
+
+        [HttpGet("/favoritos/{id}")]
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetFavoritos(int id)
+        {
+            VideoServices videoServices = new VideoServices(_context, mapper);
+            var videos = await videoServices.GetFavoritos(id);
+            return videos;
+
+        }
+
+        [HttpGet("/mas-tarde/{id}")]
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetMasTarde(int id)
+        {
+            VideoServices videoServices = new VideoServices(_context, mapper);
+            var videos = await videoServices.GetMasTarde(id);
+            return videos;
         }
 
         // PUT: api/Videos/5

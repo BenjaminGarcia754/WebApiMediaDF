@@ -1,4 +1,4 @@
-﻿namespace WebApiMediaDF.DTOs
+﻿namespace WebApiMediaDF.Modelos.DTOs
 {
     public class RespuestaAutenticacion
     {

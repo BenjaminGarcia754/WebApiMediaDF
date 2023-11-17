@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WebApiMediaDF.DTOs;
+using WebApiMediaDF.Controllers.Services;
+using WebApiMediaDF.Modelos.DTOs;
 
 namespace WebApiMediaDF.Controllers
 {
@@ -12,14 +14,20 @@ namespace WebApiMediaDF.Controllers
     [Route("api/[controller]")]
     public class CuentasController : ControllerBase
     {
+        private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
         public CuentasController(UserManager<IdentityUser> userManager,
             IConfiguration configuration,
-            SignInManager<IdentityUser> signInManager
+            SignInManager<IdentityUser> signInManager,
+            WebApiMediaDbContex contex,
+            IMapper mapper
         )
         {
             UserManager = userManager;
             Configuration = configuration;
             SignInManager = signInManager;
+            this._context = contex;
+            this.mapper = mapper;
         }
 
         public UserManager<IdentityUser> UserManager { get; }
@@ -34,26 +42,34 @@ namespace WebApiMediaDF.Controllers
 
             if (resultado.Succeeded)
             {
-                // Obtener el Id del usuario recién creado
                 var usuarioIdentity = await UserManager.FindByNameAsync(credencialesUsuario.Username);
                 var userId = usuarioIdentity.Id;
-                UsuarioDTO usuarioDTO = new UsuarioDTO();
-                usuarioDTO.Username = credencialesUsuario.Username;
-                usuarioDTO.Contraseña = credencialesUsuario.Password;
-                usuarioDTO.NombreDeUsuario = credencialesUsuario.Nombre;
-                usuarioDTO.Tipo = credencialesUsuario.Tipo;
-                usuarioDTO.UsernameIdentity = userId;
-
-                if (usuarioDTO.registrarUsuario())
+                UsuarioDTO usuarioDTO = new UsuarioDTO()
                 {
-                    var respuestaAutenticacion = ConstruirToken(credencialesUsuario);
+                    Username = credencialesUsuario.Username,
+                    Contraseña = credencialesUsuario.Password,
+                    NombreDeUsuario = credencialesUsuario.Nombre,
+                    Tipo = credencialesUsuario.Tipo,
+                    UsernameIdentity = userId
+                };
 
-                    return respuestaAutenticacion;
-                }
-                else
+
+
+                try
                 {
-                    return BadRequest("Error al registrar el usuario");
+                    var Usuario = mapper.Map<Usuario>(usuarioDTO);
+                    UsuariosServices usuariosServices = new UsuariosServices(_context);
+                    usuariosServices.registrarUsuario(Usuario);
+
+                }catch(Exception ex)
+                {
+                    return BadRequest("Error para construir el objeto" + ex.Message);
                 }
+
+                var respuestaAutenticacion = ConstruirToken(credencialesUsuario);
+
+                return respuestaAutenticacion;
+
             }
             else
             {
@@ -74,6 +90,37 @@ namespace WebApiMediaDF.Controllers
             else
             {
                 return BadRequest("Login Incorrecto");
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> EliminarUsuario(string username)
+        {
+            var user = await UserManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var resultado = await UserManager.DeleteAsync(user);
+            if (resultado.Succeeded)
+            {
+                UsuariosServices usuariosServices = new UsuariosServices(_context);
+                bool respuesta = usuariosServices.EliminarUsuario(user.Id);
+                if (!respuesta)
+                {
+                    return BadRequest("No se pudo eliminar");
+                }
+                return NoContent();
+            }
+            else 
+            { 
+                foreach (var error in resultado.Errors)
+                {
+                    ModelState.AddModelError("Error", error.Description);
+                }
+
+                return BadRequest(ModelState);
             }
         }
 

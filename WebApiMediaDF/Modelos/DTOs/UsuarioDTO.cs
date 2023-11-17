@@ -1,4 +1,4 @@
-using WebApiMediaDF.DTOs.StaticDTO;
+using WebApiMediaDF.Modelos.DTOs.StaticDTO;
 
 public class UsuarioDTO
 {
