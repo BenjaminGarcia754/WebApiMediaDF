@@ -45,7 +45,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // PUT: api/TipoReportes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTipoReporte(int id, TipoReporteDTO tipoReporteDTO)
         {
@@ -77,7 +76,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // POST: api/TipoReportes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<TipoReporte>> PostTipoReporte(TipoReporteDTO tipoReporteDTO)
         {

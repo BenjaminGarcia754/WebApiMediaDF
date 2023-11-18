@@ -63,7 +63,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // PUT: api/Videos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVideo(int id, VideoDTO videoDTO)
         {
@@ -95,7 +94,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // POST: api/Videos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Video>> PostVideo(VideoDTO videoDTO)
         {

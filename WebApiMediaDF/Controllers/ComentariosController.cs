@@ -48,7 +48,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // PUT: api/Comentarios/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComentarios(int id, ComentarioDTO comentario)
         {
@@ -80,7 +79,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // POST: api/Comentarios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Comentarios>> PostComentarios(ComentarioDTO comentarioDTO)
         {

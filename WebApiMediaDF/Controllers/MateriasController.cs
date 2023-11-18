@@ -45,7 +45,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // PUT: api/Materias/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMateria(int id, MateriaDTO materiaDTO)
         {
@@ -77,7 +76,6 @@ namespace WebApiMediaDF.Controllers
         }
 
         // POST: api/Materias
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Materia>> PostMateria(MateriaDTO materiaDTO)
         {
