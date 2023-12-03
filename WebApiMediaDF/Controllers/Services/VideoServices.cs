@@ -44,5 +44,12 @@ namespace WebApiMediaDF.Controllers.Services
             }
             return mapper.Map<List<VideoDTO>>(videos);
         }
+
+        public async Task<List<VideoDTO>> GetPorMateria(int idMateria)
+        {
+            List<Video> videos = new List<Video>();
+            var materias = _contex.Videos.Where(x => x.Materia == idMateria);
+            return mapper.Map<List<VideoDTO>>(materias);
+        }
     }
 }

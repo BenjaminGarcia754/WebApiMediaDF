@@ -33,6 +33,14 @@ namespace WebApiMediaDF.Controllers
             return mapper.Map<List<ComentarioDTO>>(comentarios);
         }
 
+        [HttpGet("comentarios_por_video/{id}")]
+        public async Task<ActionResult<IEnumerable<ComentarioDTO>>> GetComentariosPorVideo(int id)
+        {
+            var comentarios = await _context.Comentarios.Where(x => x.VideoRelacionado == id).ToListAsync();
+            return mapper.Map<List<ComentarioDTO>>(comentarios);
+        }
+
+
         // GET: api/Comentarios/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ComentarioDTO>> GetComentarios(int id)
