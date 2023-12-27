@@ -62,6 +62,14 @@ namespace WebApiMediaDF.Controllers
             return videos;
         }
 
+        [HttpGet("/materia/{id}")]
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetPorMateria(int id)
+        {
+            VideoServices videoServices = new VideoServices(_context, mapper);
+            var videos = await videoServices.GetPorMateria(id);
+            return videos;
+        }
+
         // PUT: api/Videos/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVideo(int id, VideoDTO videoDTO)
