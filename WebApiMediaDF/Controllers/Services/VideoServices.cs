@@ -28,18 +28,21 @@ namespace WebApiMediaDF.Controllers.Services
 
         public async Task<List<VideoDTO>> GetMasTarde(int id)
         {
-            List<Video> videos = new List<Video>();
-            var favoritos = _contex.VideoTypes.Where(x => x.Tipo == "Tarde" && x.IdUsuario == id);
-            foreach (VideoType favorito in favoritos)
-            {
-                var video = await _contex.Videos.FirstOrDefaultAsync(x => x.Id == favorito.IdVideo);
-                if (video != null)
-                {
-                    videos.Add(video);
-                }
+            var videos = await (
+                from tarde in _contex.VideoTypes
+                join video in _contex.Videos on tarde.IdVideo equals video.Id
+                where tarde.Tipo == "Tarde" && tarde.IdUsuario == id
+                select video
+            ).ToListAsync();
 
-            }
             return mapper.Map<List<VideoDTO>>(videos);
+        }
+
+        public async Task<List<VideoDTO>> GetPorMateria(int idMateria)
+        {
+            List<Video> videos = new List<Video>();
+            var materias = _contex.Videos.Where(x => x.Materia == idMateria);
+            return mapper.Map<List<VideoDTO>>(materias);
         }
     }
 }

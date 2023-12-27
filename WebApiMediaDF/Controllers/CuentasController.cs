@@ -126,6 +126,7 @@ namespace WebApiMediaDF.Controllers
 
         private RespuestaAutenticacion ConstruirToken(CredencialesUsuario usuario)
         {
+            UsuariosServices usuariosServices = new UsuariosServices(_context);
             var claims = new List<Claim>()
             {
                 new Claim("username", usuario.Username)
@@ -144,8 +145,10 @@ namespace WebApiMediaDF.Controllers
                                );
             return new RespuestaAutenticacion()
             {
+                Id = usuariosServices.obtenerIdUsuario(usuario),
                 Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
-                Expiracion = expiracion
+                Expiracion = expiracion,
+                TipoUsuario = usuariosServices.obtenerTipoUsuario(usuario)
             };
         }
     }
