@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebApiMediaDF.Modelos.DTOs;
 
 namespace WebApiMediaDF.Controllers.Services
 {
@@ -27,10 +28,16 @@ namespace WebApiMediaDF.Controllers.Services
             return respuesta;
         }
 
-        public int obtenerIdUsuario(Usuario usuario)
+        public int obtenerIdUsuario(CredencialesUsuario usuario)
         {
             var Usuario = _context.Usuarios.FirstOrDefault(x=> x.Username == usuario.Username);
             return Usuario.Id;
+        }
+
+        public int obtenerTipoUsuario(CredencialesUsuario usuario)
+        {
+            var Usuario = _context.Usuarios.FirstOrDefault(x => x.Username == usuario.Username);
+            return Usuario.Tipo;
         }
 
         public bool EliminarUsuario(string username)
