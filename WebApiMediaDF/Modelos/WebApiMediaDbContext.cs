@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebApiMediaDF.Modelos;
 
 public class WebApiMediaDbContex : IdentityDbContext
 {
@@ -11,6 +12,7 @@ public class WebApiMediaDbContex : IdentityDbContext
     public DbSet<TipoReporte> TiposReporte { get; set; }
     public DbSet<Reporte> Reportes { get; set; }
     public DbSet<Comentarios> Comentarios { get; set; }
+    public DbSet<CalificacionVideo> CalificacionVideos { get; set; }
 
     public WebApiMediaDbContex(DbContextOptions<WebApiMediaDbContex> options) : base(options)
     {

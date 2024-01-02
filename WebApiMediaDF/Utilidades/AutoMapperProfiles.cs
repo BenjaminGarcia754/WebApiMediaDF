@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using WebApiMediaDF.Modelos;
+using WebApiMediaDF.Modelos.DTOs;
 
 namespace WebApiMediaDF.Utilidades
 {
@@ -15,6 +17,7 @@ namespace WebApiMediaDF.Utilidades
             CreateMap<TipoReporteDTO, TipoReporte>().ReverseMap();
             CreateMap<TipoUsuario, TipoUsuarioDTO>().ReverseMap();
             CreateMap<VideoTypeDTO,  VideoType>().ReverseMap();
+            CreateMap<CalificacionVideoDTO, CalificacionVideo>().ReverseMap();
         }
     }
 }
