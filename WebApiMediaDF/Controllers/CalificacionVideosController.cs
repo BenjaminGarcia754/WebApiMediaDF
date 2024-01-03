@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiMediaDF.Modelos;
+using WebApiMediaDF.Modelos.DTOs;
 
 namespace WebApiMediaDF.Controllers
 {
@@ -14,10 +16,12 @@ namespace WebApiMediaDF.Controllers
     public class CalificacionVideosController : ControllerBase
     {
         private readonly WebApiMediaDbContex _context;
+        private readonly IMapper mapper;
 
-        public CalificacionVideosController(WebApiMediaDbContex context)
+        public CalificacionVideosController(WebApiMediaDbContex context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/CalificacionVideos
@@ -91,12 +95,20 @@ namespace WebApiMediaDF.Controllers
 
         // POST: api/CalificacionVideos
         [HttpPost]
-        public async Task<ActionResult<CalificacionVideo>> PostCalificacionVideo(CalificacionVideo calificacionVideo)
+        public async Task<ActionResult<CalificacionVideo>> PostCalificacionVideo(CalificacionVideoDTO calificacionVideo)
         {
-            _context.CalificacionVideos.Add(calificacionVideo);
+            var calificacion = mapper.Map<CalificacionVideo>(calificacionVideo);
+            _context.CalificacionVideos.Add(calificacion);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCalificacionVideo", new { id = calificacionVideo.Id }, calificacionVideo);
+        
+
+            /*
+            _context.CalificacionVideos.Add(calificacionVideo);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetCalificacionVideo", new { id = calificacionVideo.Id }, calificacionVideo);*/
         }
 
         // DELETE: api/CalificacionVideos/5
