@@ -9,8 +9,8 @@
       },
       "dotnetRunMessages": true,
       //"applicationURL": "http://172.28.64.1:7195;http://172.28.64.1:5162"
-      //"applicationUrl": "http://localhost:7195;http://localhost:5162"
-      "applicationUrl": "http://192.168.1.71:7195;http://192.168.1.71:5162"
+      "applicationUrl": "http://localhost:7195;http://localhost:5162"
+      //"applicationUrl": "http://192.168.1.71:7195;http://192.168.1.71:5162"
       //"applicationUrl": "http://192.168.1.86:7195;http://192.168.1.8:5162"
 
     },
@@ -28,7 +28,7 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "publishAllPorts": true,
       "useSSL": true,
-      "applicationUrl": "Https://localhost:7195;http://localhost:5162"
+      "applicationUrl": "http://192.168.1.71:7195;http://192.168.1.71:5162"
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",
