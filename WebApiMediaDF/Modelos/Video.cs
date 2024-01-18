@@ -17,10 +17,10 @@ public class Video
     public string Imagen { get; set; }
 
     [Required]
-    public DateTime FechaSubida { get; set; }
+    public string FechaSubida { get; set; }
 
     [Required]
-    public DateTime FechaModificacion { get; set; }
+    public string FechaModificacion { get; set; }
 
     [Required]
     public int Materia { get; set; }
