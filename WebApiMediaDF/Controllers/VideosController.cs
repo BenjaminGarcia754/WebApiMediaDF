@@ -105,6 +105,7 @@ namespace WebApiMediaDF.Controllers
         [HttpPost]
         public async Task<ActionResult<Video>> PostVideo(VideoDTO videoDTO)
         {
+            Console.WriteLine("video: " + videoDTO.Imagen);
             var video = mapper.Map<Video>(videoDTO);
             _context.Videos.Add(video);
             await _context.SaveChangesAsync();
