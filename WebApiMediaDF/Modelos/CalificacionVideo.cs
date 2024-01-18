@@ -12,6 +12,10 @@ namespace WebApiMediaDF.Modelos
         public int CalificacionUsuario { get; set; }
         [Required]
         public int VideoRelacionado { get; set; }
+        [Required]
+        public int UsuarioRelacionado { get; set; }
+
+        public Usuario Usuario { get; set; }
 
         public Video Video { get; set; }
     }
